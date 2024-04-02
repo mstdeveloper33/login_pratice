@@ -1,11 +1,13 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:login_pratice/model/response_model.dart';
+import 'package:login_pratice/shared/shared.dart';
 
-class ApiService {
+class ApiService with SharedManager {
   final Dio _dio = Dio();
 
-  Future<ResponseModel?> login(String username, String password) async {
+  Future<ResponseModel?> login(
+      String username, String password, BuildContext context) async {
     try {
       Response response = await _dio.post(
         'http://192.168.1.105:81/api/login/authentication',
@@ -28,31 +30,9 @@ class ApiService {
     }
   }
 
-  Future<void> signIn(
+  Future<ResponseModel?> signIn(
       String username, String password, BuildContext context) async {
-    
-    ResponseModel? responseData = await login(username, password);
-
-    if (responseData != null &&
-        responseData.status == true &&
-        responseData.token != null) {
-      String token = responseData.token!;
-      int userId = responseData.userID!;
-      
-
-      // ignore: use_build_context_synchronously
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Giriş başarılı. Token: $token, UserID: $userId'),
-        ),
-      );
-    } else {
-      // ignore: use_build_context_synchronously
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Giriş yapılamadı. Kullanıcı adı veya şifre hatalı.'),
-        ),
-      );
-    }
+    ResponseModel? responseData = await login(username, password, context);
+    return responseData;
   }
 }
