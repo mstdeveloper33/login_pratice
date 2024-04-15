@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:login_pratice/login/login_screen.dart';
+
 import 'package:login_pratice/provider/token_provider.dart';
 import 'package:login_pratice/shared/shared.dart';
 import 'package:provider/provider.dart';
@@ -28,10 +28,8 @@ class _HomeViewState extends State<HomeView> with SharedManager {
 
   void _cikisYap() async {
     clearToken();
-    
-    Navigator.pushReplacementNamed(
-        context, "/login"
-        );
+
+    Navigator.pushReplacementNamed(context, "/login");
   }
 }
 
