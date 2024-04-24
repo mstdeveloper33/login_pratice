@@ -4,38 +4,34 @@ import 'package:login_pratice/provider/token_provider.dart';
 import 'package:login_pratice/shared/shared.dart';
 import 'package:provider/provider.dart';
 
-class HomeView extends StatefulWidget {
+class HomeView extends StatelessWidget with SharedManager {
   const HomeView({super.key});
 
   @override
-  State<HomeView> createState() => _HomeViewState();
-}
-
-class _HomeViewState extends State<HomeView> with SharedManager {
-  @override
   Widget build(BuildContext context) {
-    getToken();
-    String token = Provider.of<TokenProvider>(context).token;
+    // getToken();
+
     return Scaffold(
-      appBar: AppBar(backgroundColor: Colors.blueAccent, title: Text("$token")),
+      appBar: AppBar(
+        backgroundColor: Colors.blueAccent,
+        title: Consumer<TokenProvider>(
+          builder: (context, tokenProvider, _) {
+            return Text(tokenProvider.token);
+          },
+        ),
+      ),
       body: ElevatedButton(
           onPressed: () {
-            _cikisYap();
+            _cikisYap(context);
           },
           child: Text("Çıkış Yap")),
     );
   }
 
-  void _cikisYap() async {
-    clearToken();
+  void _cikisYap(BuildContext context) async {
+    await clearToken();
+    print("token silindi");
 
     Navigator.pushReplacementNamed(context, "/login");
   }
 }
-
-
-//  String token = "";
-//   Future<void> getTokenCAche() async {
-//     token = await getToken() ?? "";
-//     setState(() {});
-//   }

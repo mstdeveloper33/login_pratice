@@ -26,9 +26,11 @@ class _LoginScreenState extends State<LoginScreen> with SharedManager {
     super.initState();
     butonDurumu;
   }
-
+  // TODO Burada kullanıcı isteği sonrası api ile iletişimin sağlanması için işlem yapıldı. 
+  // TODO Eğer kullanıcı girişi sağlanıyorsa token saklanıyor , eğer giriş yapılamıyorsa uyarı için alert dialog gösteriyor.
   Future<void> _signIn() async {
     showDialog(
+      barrierDismissible: false,
       context: context,
       builder: (context) {
         return const Center(
@@ -41,23 +43,27 @@ class _LoginScreenState extends State<LoginScreen> with SharedManager {
 
     ResponseModel? responseData =
         await _apiService.signIn(username, password, context);
+    // ignore: use_build_context_synchronously
     Navigator.of(context).pop(); // Loading indicator'ı kapat
 
     if (responseData != null &&
         responseData.status == true &&
         responseData.token != null) {
       saveToken(responseData.token ?? "");
+      // ignore: use_build_context_synchronously
       Provider.of<TokenProvider>(context, listen: false).token =
           responseData.token!;
+      // ignore: use_build_context_synchronously
       Navigator.pushReplacementNamed(context, "/home"); // Home sayfasına git
     } else {
+      // ignore: use_build_context_synchronously
       showDialog(
         barrierDismissible: false,
         context: context,
         builder: (context) => AlertDialog(
           backgroundColor: Colors.white,
-          title: Text('Giriş Başarısız.'),
-          content: Text('Kullanıcı adı veya şifre hatalı.'),
+          title: const Text('Giriş Başarısız.'),
+          content: const Text('Kullanıcı adı veya şifre hatalı.'),
           actions: [
             TextButton(
               onPressed: () {
@@ -65,8 +71,9 @@ class _LoginScreenState extends State<LoginScreen> with SharedManager {
                 _usernameController
                     .clear(); // Kullanıcı adı TextField'ını temizle
                 _passwordController.clear();
+                _butonKontrol();
               },
-              child: Text('Tamam'),
+              child: const Text('Tamam'),
             ),
           ],
         ),
@@ -92,14 +99,14 @@ class _LoginScreenState extends State<LoginScreen> with SharedManager {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Expanded(child: Image.asset("assets/images/talu_2.png")),
-                SizedBox(
+                const SizedBox(
                   height: 10,
                 ),
                 Text(
                   "Hoşgeldiniz",
                   style: TextStyle(color: Colors.grey[700], fontSize: 16),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 10,
                 ),
                 _padding(),
@@ -133,7 +140,7 @@ class _LoginScreenState extends State<LoginScreen> with SharedManager {
         },
         controller: _passwordController,
         decoration: const InputDecoration(
-            prefixIcon: Icon(Icons.password),
+            suffixIcon: Icon(Icons.password),
             enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.all(Radius.circular(10)),
                 borderSide: BorderSide(color: Colors.black)),
@@ -156,7 +163,7 @@ class _LoginScreenState extends State<LoginScreen> with SharedManager {
         },
         controller: _usernameController,
         decoration: const InputDecoration(
-            prefixIcon: Icon(Icons.mail),
+            suffixIcon: Icon(Icons.mail),
             enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.all(Radius.circular(10)),
                 borderSide: BorderSide(color: Colors.black)),
